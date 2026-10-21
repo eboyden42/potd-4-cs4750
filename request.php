@@ -15,6 +15,17 @@
   <link rel="stylesheet" href="maintenance-system.css">  
 </head>
 
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!emtpy($_POST['cofmBtn'])) {
+      updateRequest($_POST['reqId'], )
+    }
+  }
+
+  <!-- need to put in the setup stuff here -->
+  <!-- else if (!empty($_POST['updateBtn'])) {
+    $reqest_to_update = getRequestById()
+  } -->
+
 <body>  
 <div class="container">
   <div class="row g-3 mt-2">
@@ -35,7 +46,8 @@
                    id='requestedDate' name='requestedDate' 
                    placeholder='Format: yyyy-mm-dd' 
                    pattern="\d{4}-\d{1,2}-\d{1,2}" 
-                   value="" />
+                   value="<?php if ($reqest_to_update != null) echo $reqest_to_update['reqDate'] ?>"
+            />
           </div>
         </td>
         <td>
@@ -71,7 +83,8 @@
             Requested Priority:
             <select class='form-select' id='priority_option' name='priority_option'>
               <option selected></option>
-              <option value='high' >
+              <option value='high' <?php if ($reqest_to_update!=null && $reqest_to_update['reqPriority']=='high')
+                echo 'selected="selected"' ?> >
                 High - Must be done within 24 hours</option>
               <option value='medium' >
                 Medium - Within a week</option>
@@ -120,6 +133,23 @@
     <th><b>Delete?</b></th>
   </tr>
   </thead>
+  <?php foreach ($list_of_requests as $row): ?>
+  <tr>
+    <td><?php echo $row['reqId'] ?></td>
+    <td><?php echo $row['reqDate'] ?></td>
+    <td><?php echo $row['roomNumber'] ?></td>
+    <td><?php echo $row['reqBy'] ?></td>
+    <td><?php echo $row['repairDesc'] ?></td>
+    <td><?php echo $row['reqPriority'] ?></td>
+    <td>
+      <form action="request.php" method="post">
+        <input type="submit" value="Update" name="updateBtn" class="btn btn-primary" title="click to update the request" />
+        <input type="hidden" name="reqId" value="<?php echo $row['reqId'] ?>" />
+      </form>
+    </td>
+    <td>delete</td> 
+  </tr>
+  <?php endforeach; ?>
 </table>
 </div>   
 
