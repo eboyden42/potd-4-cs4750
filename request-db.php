@@ -1,11 +1,22 @@
 <?php
 
-$list_of_requests = getAllRequests()
-var_dump($list_of_requests)
-
 function addRequests($reqDate, $roomNumber, $reqBy, $repairDesc, $reqPriority)
 {
+    global $db;
 
+    $query = "INSERT INTO request VALUES (:reqDate, :roomNumber, :reqBy, :repairDesc, :reqPriority)";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':reqDate', $reqDate);
+    $statement->bindValue(':roomNumber', $roomNumber);
+    $statement->bindValue(':reqBy', $reqBy);
+    $statement->bindValue(':repairDesc', $repairDesc);
+    $statement->bindValue(':reqPriority', $reqPriority);
+    $statement->execute();
+
+    $res = $statement->fetchAll();
+    $statement->closeCursor();
+
+    return $res;
 
 }
 
@@ -13,12 +24,13 @@ function getAllRequests()
 {
     global $db;
 
-    $query = "SELECT * FROM requests"
-    $statement = $db->prepare($query)
-    $statement->execute()
-    $res = $statement->fetchAll() // fetch() just gets one row
+    $query = "SELECT * FROM requests";
+    $statement = $db->prepare($query);
+    $statement->execute();
+    $res = $statement->fetchAll(); // fetch() just gets one row
+    $statement->closeCursor();
 
-    return $res
+    return $res;
 }
 
 function getRequestById($id)  

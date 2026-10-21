@@ -15,16 +15,25 @@
   <link rel="stylesheet" href="maintenance-system.css">  
 </head>
 
+  <?php 
+  require_once('request-db.php');
+  require_once('connect-db.php');
+
+  $request_to_update = null;
+  $list_of_requests = getAllRequests(); 
+
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!emtpy($_POST['cofmBtn'])) {
-      updateRequest($_POST['reqId'], )
+    if (!empty($_POST['addBtn'])) {
+      addRequests($_POST['reqDate'], $_POST['roomNumber'], $_POST['reqBy'], $_POST['repairDesc'], $_POST['reqPriority']);
+    }
+    else if (!emtpy($_POST['cofmBtn'])) {
+      // so something
+    }
+    else if (!empty($_POST['updateBtn'])) {
+      $request_to_update = getRequestById();
     }
   }
-
-  <!-- need to put in the setup stuff here -->
-  <!-- else if (!empty($_POST['updateBtn'])) {
-    $reqest_to_update = getRequestById()
-  } -->
+  ?>
 
 <body>  
 <div class="container">
@@ -46,7 +55,7 @@
                    id='requestedDate' name='requestedDate' 
                    placeholder='Format: yyyy-mm-dd' 
                    pattern="\d{4}-\d{1,2}-\d{1,2}" 
-                   value="<?php if ($reqest_to_update != null) echo $reqest_to_update['reqDate'] ?>"
+                   value="<?php if ($request_to_update != null) echo $request_to_update['reqDate'] ?>"
             />
           </div>
         </td>
@@ -83,7 +92,7 @@
             Requested Priority:
             <select class='form-select' id='priority_option' name='priority_option'>
               <option selected></option>
-              <option value='high' <?php if ($reqest_to_update!=null && $reqest_to_update['reqPriority']=='high')
+              <option value='high' <?php if ($request_to_update!=null && $request_to_update['reqPriority']=='high')
                 echo 'selected="selected"' ?> >
                 High - Must be done within 24 hours</option>
               <option value='medium' >
@@ -133,7 +142,7 @@
     <th><b>Delete?</b></th>
   </tr>
   </thead>
-  <?php foreach ($list_of_requests as $row): ?>
+  <?php if ($list_of_requests != null) foreach ($list_of_requests as $row): ?>
   <tr>
     <td><?php echo $row['reqId'] ?></td>
     <td><?php echo $row['reqDate'] ?></td>
