@@ -13,12 +13,12 @@
 ////////////////////////////////////////////
 
 /** F26, PHP (on local XAMPP or CS server) connect to MySQL instance (GCP) **/
-// $username = 'root';
-// $password = 'your-root-password';
-// $host = 'instance-connection-name';       // e.g., 'cs4750:us-east4:db-demo'; 
-// $dbname = 'your-database-name;;           // e.g., 'guestbook';
-// $dsn = "mysql:host=your-SQL-public-IP-address;dbname=your-database-name";   // connect PHP (XAMPP) to DB (GCP)
-//     e.g., "mysql:host=99.99.999.99;dbname=$dbname";   
+$username = 'root';
+$password = 'password';
+$host = '34.182.135.252';       // e.g., 'cs4750:us-east4:db-demo'; 
+$dbname = 'potd4db';         // e.g., 'guestbook';
+$dsn = "mysql:host=$host;dbname=$dbname"; // connect PHP (XAMPP) to DB (GCP)
+   //  e.g., "mysql:host=99.99.999.99;dbname=$dbname";   
 
 // to get public IP addres of the SQL instance, go to GCP SQL overview page
 
@@ -30,11 +30,11 @@
 ////////////////////////////////////////////
 
 /** F26, PHP (on GCP, local XAMPP, or CS server) connect to MySQL (on local XAMPP) **/
-$username = 'root';
-$password = '';
-$host = 'localhost';
-$dbname = 'potd4db';    // voting_system
-$dsn = "mysql:host=$host;dbname=$dbname";  
+// $username = 'root';
+// $password = 'Password1!';
+// $host = '34.182.135.252';
+// $dbname = 'potd4db';    // voting_system
+// $dsn = "mysql:host=$host;dbname=$dbname";  
 ////////////////////////////////////////////
 
 /** F26, PHP (on GCP, local XAMPP, or CS server) connect to MySQL (on CS server) **/

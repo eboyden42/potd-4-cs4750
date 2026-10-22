@@ -20,19 +20,24 @@
   require_once('connect-db.php');
 
   $request_to_update = null;
-  $list_of_requests = getAllRequests(); 
 
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($_POST['addBtn'])) {
-      addRequests($_POST['reqDate'], $_POST['roomNumber'], $_POST['reqBy'], $_POST['repairDesc'], $_POST['reqPriority']);
+      addRequests($_POST['requestedDate'], $_POST['roomNo'], $_POST['requestedBy'], $_POST['requestDesc'], $_POST['priority_option']);
     }
-    else if (!emtpy($_POST['cofmBtn'])) {
-      // so something
+    else if (!empty($_POST['cofmBtn']) && !empty($_POST['reqId'])) {
+      updateRequest($_POST['reqId'], $_POST['requestedDate'], $_POST['roomNo'], $_POST['requestedBy'], $_POST['requestDesc'], $_POST['priority_option']);
     }
     else if (!empty($_POST['updateBtn'])) {
-      $request_to_update = getRequestById();
+      $request_to_update = getRequestById($_POST['reqId']);
+    }
+    else if (!empty($_POST['deleteBtn'])) {
+      deleteRequest($_POST['reqId']);
     }
   }
+
+  // get the list after handling the POST so it reflects any add/update/delete
+  $list_of_requests = getAllRequests();
   ?>
 
 <body>  
@@ -62,8 +67,8 @@
         <td>
           <div class='mb-3'>
             Room Number:
-            <input type='text' class='form-control' id='roomNo' name='roomNo' 
-                   value="" />
+            <input type='text' class='form-control' id='roomNo' name='roomNo'
+                   value="<?php if ($request_to_update != null) echo $request_to_update['roomNumber'] ?>" />
           </div>
         </td>
       </tr>
@@ -73,7 +78,7 @@
             Requested by: 
             <input type='text' class='form-control' id='requestedBy' name='requestedBy'
                    placeholder='Enter your name'
-                   value="" />
+                   value="<?php if ($request_to_update != null) echo $request_to_update['reqBy'] ?>" />
           </div>
         </td>
       </tr>
@@ -82,7 +87,7 @@
           <div class="mb-3">
             Description of work/repair:
             <input type='text' class='form-control' id='requestDesc' name='requestDesc'
-                   value="" />
+                   value="<?php if ($request_to_update != null) echo $request_to_update['repairDesc'] ?>" />
         </div>
         </td>
       </tr>
@@ -95,15 +100,18 @@
               <option value='high' <?php if ($request_to_update!=null && $request_to_update['reqPriority']=='high')
                 echo 'selected="selected"' ?> >
                 High - Must be done within 24 hours</option>
-              <option value='medium' >
+              <option value='medium' <?php if ($request_to_update!=null && $request_to_update['reqPriority']=='medium')
+                echo 'selected="selected"' ?> >
                 Medium - Within a week</option>
-              <option value='low' >
+              <option value='low' <?php if ($request_to_update!=null && $request_to_update['reqPriority']=='low')
+                echo 'selected="selected"' ?> >
                 Low - When you get a chance</option>
             </select>
           </div>
         </td>
       </tr>
     </table>
+    <input type="hidden" name="reqId" value="<?php if ($request_to_update != null) echo $request_to_update['reqId'] ?>" />
 
     <div class="row g-3 mx-auto">    
       <div class="col-4 d-grid ">
@@ -156,7 +164,12 @@
         <input type="hidden" name="reqId" value="<?php echo $row['reqId'] ?>" />
       </form>
     </td>
-    <td>delete</td> 
+    <td>
+      <form action="request.php" method="post">
+        <input type="submit" value="Delete" name="deleteBtn" class="btn btn-danger" title="click to delete the request" />
+        <input type="hidden" name="reqId" value="<?php echo $row['reqId'] ?>" />
+      </form>
+    </td>
   </tr>
   <?php endforeach; ?>
 </table>
